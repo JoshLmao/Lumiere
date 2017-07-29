@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-
-    //Current 
+    //Current health
     double m_currentHealth;
     public double CurrentHealth
     {
@@ -13,11 +12,14 @@ public class PlayerController : MonoBehaviour
         set { m_currentHealth = value; }
     }
 
+    public double GunDamage = 40;
+
     float MoveSpeed = 10f;
     float JumpAmount = 5f;
 
     GameController m_game;
     Rigidbody2D m_rigidBody;
+    GunController m_gun;
 
     bool m_isJumping = false;
     float m_distanceToGround;
@@ -37,13 +39,11 @@ public class PlayerController : MonoBehaviour
 
         m_rigidBody.velocity = new Vector2(horizontalMove * MoveSpeed, m_rigidBody.velocity.y);
 
-        //if (Input.GetKeyDown(KeyCode.Space) && !m_isJumping)
-        //{
-        //    m_isJumping = true;
-        //    m_rigidBody.AddForce(new Vector3(0, JumpAmount, 0), ForceMode2D.Impulse);
-        //}
-        //if (IsGrounded() && m_isJumping)
-        //    m_isJumping = false;
+        if(Input.GetButtonDown("Fire1"))
+        {
+            
+        }
+
     }
 
     bool IsGrounded()

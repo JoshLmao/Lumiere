@@ -4,6 +4,5 @@ using UnityEngine;
 
 public interface IEnemy
 {
-
-
+    void RecieveHit(double damage);
 }
