@@ -3,8 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GunController : MonoBehaviour {
-
+public class GunController : MonoBehaviour
+{
     [SerializeField]
     Transform m_firePosition;
 
@@ -61,7 +61,6 @@ public class GunController : MonoBehaviour {
         if(hit.collider != null)
         {
             Debug.DrawLine(firePointPosition, hit.point, Color.red);
-            Debug.Log("Hit");
         }
 
         m_player.OnShot();

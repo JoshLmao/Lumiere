@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Constants
 {
+    /// <summary>
+    /// Total health of player
+    /// </summary>
     public static readonly double TOTAL_HEALTH = 100;
 
     public static readonly float ENEMY_MIN_HEALTH = 80;
@@ -18,8 +21,10 @@ public class Constants
     /// <summary>
     /// The distance the player needs to be within for the enemies to be able to shoot at the player
     /// </summary>
-    public static readonly float ENEMY_RANGE_TO_PLAYER = 10f;
+    public static readonly float ENEMY_RANGE_TO_PLAYER = 7f;
 
+    #region Tags
     public static string ENEMY_TAG = "Enemy";
     public static string BULLET_TAG = "Bullet";
+    #endregion
 }

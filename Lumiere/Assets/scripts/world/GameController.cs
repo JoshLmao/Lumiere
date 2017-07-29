@@ -4,7 +4,14 @@ using UnityEngine;
 using System.Linq;
 using System;
 
-public class GameController : MonoBehaviour {
+public class GameController : MonoBehaviour
+{
+    int m_score = 0;
+    public int Score
+    {
+        get { return m_score; }
+        set { m_score = value; }
+    }
 
     [SerializeField]
     GameObject m_masterGlobalObject;
@@ -32,6 +39,8 @@ public class GameController : MonoBehaviour {
         GameObject playerObject = Instantiate(m_playerPrefab);
         Player = playerObject.GetComponent<PlayerController>();
         Player.CurrentHealth = Constants.TOTAL_HEALTH;
+        if (!playerObject.activeInHierarchy)
+            playerObject.SetActive(true);
 
         SpawnEnemies(m_enemySpawnLocations);
     }
@@ -67,13 +76,25 @@ public class GameController : MonoBehaviour {
         }
     }
 
-    void OnEnemyKilled(double powerAmount)
+    void OnEnemyKilled(EnemyController enemy)
     {
-        Player.AddPower(powerAmount);
+        Player.AddPower(enemy.PowerDropped);
+        AddToScore(enemy.ScoreAmount);
     }
 
     public void OnPlayerKilled()
     {
         Debug.Log("Game Over, son");
+    }
+
+    public void AddToScore(int amount)
+    {
+        if ((amount % 1) == 0)
+            Score += amount;
+        else
+        {
+            //Round if need to
+            Score += (int)Math.Round((double)amount, 0, MidpointRounding.ToEven);
+        }
     }
 }

@@ -8,12 +8,16 @@ public class EnemyController : MonoBehaviour, IEnemy
     public double Health = 100;
     public double PowerDropped = 30;
 
+    public int ScoreAmount { get { return CalculateScore(); } }
+
     /// <summary>
     /// Amount of damage to the players power/health
     /// </summary>
     public double EnemyGunDamage = 10;
 
-    public event Action<double> OnEnemyKilled;
+    public event Action<EnemyController> OnEnemyKilled;
+
+    double m_startHealth;
 
     void Start()
     {
@@ -28,7 +32,7 @@ public class EnemyController : MonoBehaviour, IEnemy
     public void RecieveHit(double damage)
     {
         Health -= damage;
-        Debug.Log("Hit enemy for '" + damage + "' damage");
+        Debug.Log("Player hit for '" + damage + "' damage");
         if (Health < 0)
         {
             OnKilled();
@@ -40,6 +44,7 @@ public class EnemyController : MonoBehaviour, IEnemy
         GetComponentInChildren<EnemyGunController>().Player = player;
         Health = health;
         PowerDropped = powerDropped;
+        m_startHealth = health;
     }
 
     void OnKilled()
@@ -67,6 +72,16 @@ public class EnemyController : MonoBehaviour, IEnemy
     void InvokeEnemyKilled()
     {
         if(OnEnemyKilled != null)
-            OnEnemyKilled.Invoke(PowerDropped);
+            OnEnemyKilled.Invoke(this);
+    }
+
+    /// <summary>
+    /// Way of calculating score for when enemy is killed rather than being set random
+    /// </summary>
+    /// <returns></returns>
+    int CalculateScore()
+    {
+        var first = m_startHealth * PowerDropped;
+        return (int)Math.Round(first, 0, MidpointRounding.ToEven);
     }
 }
