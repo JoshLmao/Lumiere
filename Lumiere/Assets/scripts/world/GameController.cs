@@ -22,7 +22,8 @@ public class GameController : MonoBehaviour {
     public Transform[] m_enemySpawnLocations;
 
     List<EnemyController> m_enemies = new List<EnemyController>();
-    
+    GameObject m_playerObject;
+
     #region MonoBehaviors
     void Awake()
     {
@@ -31,6 +32,8 @@ public class GameController : MonoBehaviour {
         GameObject playerObject = Instantiate(m_playerPrefab);
         Player = playerObject.GetComponent<PlayerController>();
         Player.CurrentHealth = Constants.TOTAL_HEALTH;
+
+        SpawnEnemies(m_enemySpawnLocations);
     }
 
     void Start ()
@@ -46,13 +49,21 @@ public class GameController : MonoBehaviour {
 
     void SpawnEnemies(Transform[] spawnLocs)
     {
+        if (m_enemies.Count < 0)
+            m_enemies.Clear();
+
         foreach(Transform t in spawnLocs)
         {
-            GameObject enemy = Instantiate(m_enemyPrefab, t.position, t.rotation, m_enemySpawnParent.transform);
-            EnemyController controller = enemy.GetComponent<EnemyController>();
-            controller.Health = UnityEngine.Random.Range(Constants.ENEMY_MIN_HEALTH, Constants.ENEMY_MAX_HEALTH);
-            controller.PowerDropped = UnityEngine.Random.Range(Constants.ENEMY_MIN_POWER_DROPPED, Constants.ENEMY_MAX_POWER_DROPPED);
-            controller.OnEnemyKilled += OnEnemyKilled;
+            GameObject enemyObject = Instantiate(m_enemyPrefab, t.position, t.rotation, m_enemySpawnParent.transform);
+            EnemyController enemy = enemyObject.GetComponent<EnemyController>();
+            enemy.OnEnemyKilled += OnEnemyKilled;
+
+            enemy.Initialize(Player.gameObject.transform, 
+                UnityEngine.Random.Range(Constants.ENEMY_MIN_HEALTH, Constants.ENEMY_MAX_HEALTH), 
+                UnityEngine.Random.Range(Constants.ENEMY_MIN_POWER_DROPPED, Constants.ENEMY_MAX_POWER_DROPPED),
+                UnityEngine.Random.Range(Constants.ENEMY_MIN_GUN_DAMAGE, Constants.ENEMY_MAX_GUN_DAMAGE));
+
+            m_enemies.Add(enemy);
         }
     }
 

@@ -71,6 +71,6 @@ public class GunController : MonoBehaviour {
     {
         var bullet = Instantiate(m_bulletTrailPrefab, m_firePosition.position, m_firePosition.rotation);
         //Pass the amount of damage the bulley will do to the component, then to the enemy
-        bullet.GetComponent<MoveBulletTrail>().Damage = m_player.GunDamage;
+        bullet.GetComponent<MoveBulletTrail>().InitializeBullet(m_player.gameObject, m_player.GunDamage);
     }
 }

@@ -28,6 +28,10 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     public double MovingRate = 0.005;
     /// <summary>
+    /// The rate that will be removed from the player's power if the mouse is moving
+    /// </summary>
+    public double MouseMoveRate = 0.002;
+    /// <summary>
     /// The rate that will be removed from the player's power if the player ha sshot a bullet
     /// </summary>
     public double ShootingRate = 0.01;
@@ -58,12 +62,32 @@ public class PlayerController : MonoBehaviour
 
         m_rigidBody.velocity = new Vector2(horizontalMove * MoveSpeed, m_rigidBody.velocity.y);
 
-        //If moving, else idle
+        double mouseX = Input.GetAxis("Mouse X");
+        double mouseY = Input.GetAxis("Mouse Y");
+
+        //If moving player, or moving mouse, else idle
         if (horizontalMove != 0 || verticalMove != 0)
             OnRemovePower(MovingRate);
+        else if (mouseX != 0 || mouseY != 0)
+            OnRemovePower(MouseMoveRate);
         else
             OnRemovePower(IdleRate);
     }
+
+    public void OnTriggerEnter2D(Collider2D col)
+    {
+        //Detect when player gets hit by a bulley
+        if(col.gameObject.tag == Constants.BULLET_TAG)
+        {
+            var bullet = col.gameObject.GetComponent<MoveBulletTrail>();
+            if (bullet.Owner != this.gameObject)
+            {
+                OnBeenShot(bullet.Damage);
+                bullet.DestroyEarly();
+            }
+        }
+    }
+
     #endregion
 
     bool IsGrounded()
@@ -97,5 +121,14 @@ public class PlayerController : MonoBehaviour
 
         if (CurrentHealth < 0)
             m_game.OnPlayerKilled();
+    }
+
+    /// <summary>
+    /// Player gets shot by an AI
+    /// </summary>
+    /// <param name="damage"></param>
+    void OnBeenShot(double damage)
+    {
+        OnRemovePower(damage);
     }
 }

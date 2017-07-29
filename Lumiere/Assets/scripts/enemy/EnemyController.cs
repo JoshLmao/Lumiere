@@ -8,6 +8,11 @@ public class EnemyController : MonoBehaviour, IEnemy
     public double Health = 100;
     public double PowerDropped = 30;
 
+    /// <summary>
+    /// Amount of damage to the players power/health
+    /// </summary>
+    public double EnemyGunDamage = 10;
+
     public event Action<double> OnEnemyKilled;
 
     void Start()
@@ -30,6 +35,13 @@ public class EnemyController : MonoBehaviour, IEnemy
         }
     }
 
+    public void Initialize(Transform player, double health, double powerDropped, double enemyGunDamage)
+    {
+        GetComponentInChildren<EnemyGunController>().Player = player;
+        Health = health;
+        PowerDropped = powerDropped;
+    }
+
     void OnKilled()
     {
         Debug.Log("Killed enemy. Dropped '" + PowerDropped + "' power");
@@ -42,10 +54,13 @@ public class EnemyController : MonoBehaviour, IEnemy
         if (col.gameObject.tag == Constants.BULLET_TAG)
         {
             GameObject enemy = col.gameObject;
-            var moveComponent = enemy.GetComponent<MoveBulletTrail>();
+            MoveBulletTrail moveComponent = enemy.GetComponent<MoveBulletTrail>();
             //Do damage and destroy bullet early
-            RecieveHit(moveComponent.Damage);
-            moveComponent.DestroyEarly();
+            if (moveComponent.Owner != this.gameObject)
+            {
+                RecieveHit(moveComponent.Damage);
+                moveComponent.DestroyEarly(); //destroy bulley early
+            }
         }
     }
 
