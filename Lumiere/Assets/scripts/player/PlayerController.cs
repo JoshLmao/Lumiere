@@ -18,7 +18,6 @@ public class PlayerController : MonoBehaviour
     /// Amount of damage one bullet from the gun will do
     /// </summary>
     public double GunDamage = 40;
-
     /// <summary>
     /// The rate that will be removed from the player's power if they are stood still, idle
     /// </summary>

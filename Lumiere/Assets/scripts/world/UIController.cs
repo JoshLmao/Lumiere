@@ -8,6 +8,9 @@ public class UIController : MonoBehaviour {
     [SerializeField]
     Slider m_healthSlider;
 
+    [SerializeField]
+    Text m_scoreText;
+
     GameController m_game;
 
 	void Start ()
@@ -19,5 +22,7 @@ public class UIController : MonoBehaviour {
 	void Update ()
     {
         m_healthSlider.value = (float)m_game.Player.CurrentHealth;
+
+        //m_scoreText.text = "Score: " + m_game.Player.Score;
     }
 }
