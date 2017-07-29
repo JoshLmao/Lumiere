@@ -35,7 +35,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     public double ShootingRate = 0.01;
 
-    float MoveSpeed = 10f;
+    float MoveSpeed = 5f;
     float JumpAmount = 5f;
 
     GameController m_game;
@@ -74,7 +74,7 @@ public class PlayerController : MonoBehaviour
         double mouseX = Input.GetAxis("Mouse X");
         double mouseY = Input.GetAxis("Mouse Y");
 
-        if(m_canLosePower)
+        if (m_canLosePower)
         {
             //If moving player, or moving mouse, else idle
             if (horizontalMove != 0 || verticalMove != 0)
@@ -89,7 +89,7 @@ public class PlayerController : MonoBehaviour
     public void OnTriggerEnter2D(Collider2D col)
     {
         //Detect when player gets hit by a bulley
-        if(col.gameObject.tag == Constants.BULLET_TAG)
+        if (col.gameObject.tag == Constants.BULLET_TAG)
         {
             var bullet = col.gameObject.GetComponent<MoveBulletTrail>();
             if (bullet.Owner != this.gameObject)
@@ -98,7 +98,7 @@ public class PlayerController : MonoBehaviour
                 bullet.DestroyEarly();
             }
         }
-        else if(col.gameObject.tag == Constants.RESTART_LEVEL_TAG)
+        else if (col.gameObject.tag == Constants.RESTART_LEVEL_TAG)
         {
             m_game.RestartLevel();
         }
