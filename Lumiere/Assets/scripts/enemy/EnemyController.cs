@@ -1,10 +1,14 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyController : MonoBehaviour, IEnemy
 {
     public double Health = 100;
+    public double PowerDropped = 30;
+
+    public event Action<double> OnEnemyKilled;
 
     void Start()
     {
@@ -28,7 +32,8 @@ public class EnemyController : MonoBehaviour, IEnemy
 
     void OnKilled()
     {
-        Debug.Log("Killed enemy");
+        Debug.Log("Killed enemy. Dropped '" + PowerDropped + "' power");
+        InvokeEnemyKilled();
         Destroy(this.gameObject);
     }
 
@@ -42,5 +47,11 @@ public class EnemyController : MonoBehaviour, IEnemy
             RecieveHit(moveComponent.Damage);
             moveComponent.DestroyEarly();
         }
+    }
+
+    void InvokeEnemyKilled()
+    {
+        if(OnEnemyKilled != null)
+            OnEnemyKilled.Invoke(PowerDropped);
     }
 }

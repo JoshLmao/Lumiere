@@ -19,6 +19,8 @@ public class GunController : MonoBehaviour {
     float m_timeToSpawnEffect = 0f;
     PlayerController m_player;
 
+    public event Action<double> OnKilledEnemy;
+
     void Start()
     {
         m_player = transform.parent.GetComponentInParent<PlayerController>();
@@ -61,11 +63,14 @@ public class GunController : MonoBehaviour {
             Debug.DrawLine(firePointPosition, hit.point, Color.red);
             Debug.Log("Hit");
         }
+
+        m_player.OnShot();
     }
 
     void Effect()
     {
         var bullet = Instantiate(m_bulletTrailPrefab, m_firePosition.position, m_firePosition.rotation);
+        //Pass the amount of damage the bulley will do to the component, then to the enemy
         bullet.GetComponent<MoveBulletTrail>().Damage = m_player.GunDamage;
     }
 }
