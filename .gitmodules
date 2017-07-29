@@ -1,0 +1,3 @@
+[submodule "Lumiere/Assets/PostProcessing"]
+	path = Lumiere/Assets/PostProcessing
+	url = https://github.com/Unity-Technologies/PostProcessing.git

@@ -120,7 +120,10 @@ public class PlayerController : MonoBehaviour
         CurrentHealth -= amount;
 
         if (CurrentHealth < 0)
+        {
             m_game.OnPlayerKilled();
+            CurrentHealth = 0;
+        }
     }
 
     /// <summary>
