@@ -25,6 +25,9 @@ public class GameController : MonoBehaviour
     [SerializeField]
     GameObject m_enemySpawnParent;
 
+    [SerializeField]
+    GameObject m_playerSpawnPosition;
+
     public PlayerController Player;
     public Transform[] m_enemySpawnLocations;
 
@@ -37,8 +40,11 @@ public class GameController : MonoBehaviour
         DontDestroyOnLoad(m_masterGlobalObject);
 
         GameObject playerObject = Instantiate(m_playerPrefab);
+        playerObject.transform.position = m_playerSpawnPosition.transform.position;
+
         Player = playerObject.GetComponent<PlayerController>();
         Player.CurrentHealth = Constants.TOTAL_HEALTH;
+
         if (!playerObject.activeInHierarchy)
             playerObject.SetActive(true);
 
@@ -96,5 +102,29 @@ public class GameController : MonoBehaviour
             //Round if need to
             Score += (int)Math.Round((double)amount, 0, MidpointRounding.ToEven);
         }
+    }
+
+    /// <summary>
+    /// Spawn player at start of level
+    /// </summary>
+    void StartSpawnPlayer()
+    {
+
+    }
+
+    public void RestartLevel()
+    {
+        foreach(Transform t in m_enemySpawnParent.transform)
+        {
+            //Only destroy spawned enemies
+            if(t.gameObject.GetComponent<EnemyController>() != null)
+                Destroy(t.gameObject);
+        }
+
+        //Dont reload level. Just change player pos and respawn enemies
+        Player.gameObject.transform.position = m_playerSpawnPosition.transform.position;
+        Player.SpawnInvulnerability();
+
+        SpawnEnemies(m_enemySpawnLocations);
     }
 }

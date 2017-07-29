@@ -9,6 +9,7 @@ public class EnemyController : MonoBehaviour, IEnemy
     public double PowerDropped = 30;
 
     public int ScoreAmount { get { return CalculateScore(); } }
+    public double TotalHealth { get; set; }
 
     /// <summary>
     /// Amount of damage to the players power/health
@@ -16,8 +17,6 @@ public class EnemyController : MonoBehaviour, IEnemy
     public double EnemyGunDamage = 10;
 
     public event Action<EnemyController> OnEnemyKilled;
-
-    double m_startHealth;
 
     void Start()
     {
@@ -44,7 +43,7 @@ public class EnemyController : MonoBehaviour, IEnemy
         GetComponentInChildren<EnemyGunController>().Player = player;
         Health = health;
         PowerDropped = powerDropped;
-        m_startHealth = health;
+        TotalHealth = health;
     }
 
     void OnKilled()
@@ -81,7 +80,7 @@ public class EnemyController : MonoBehaviour, IEnemy
     /// <returns></returns>
     int CalculateScore()
     {
-        var first = m_startHealth * PowerDropped;
+        var first = TotalHealth * PowerDropped;
         return (int)Math.Round(first, 0, MidpointRounding.ToEven);
     }
 }

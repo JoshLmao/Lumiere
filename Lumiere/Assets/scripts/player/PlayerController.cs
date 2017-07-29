@@ -43,6 +43,7 @@ public class PlayerController : MonoBehaviour
     GunController m_gun;
 
     bool m_isJumping = false;
+    bool m_canLosePower = false;
     float m_distanceToGround;
 
     #region MonoBehaviours
@@ -52,6 +53,15 @@ public class PlayerController : MonoBehaviour
         m_rigidBody = GetComponentInChildren<Rigidbody2D>();
 
         m_distanceToGround = GetComponentInChildren<Collider2D>().bounds.extents.y;
+        SpawnInvulnerability();
+    }
+
+    /// <summary>
+    /// When the player spawns, give them invulnerability for a little bit
+    /// </summary>
+    public void SpawnInvulnerability()
+    {
+        StartCoroutine(Invulnerability(1.5f));
     }
 
     void Update()
@@ -64,13 +74,16 @@ public class PlayerController : MonoBehaviour
         double mouseX = Input.GetAxis("Mouse X");
         double mouseY = Input.GetAxis("Mouse Y");
 
-        //If moving player, or moving mouse, else idle
-        if (horizontalMove != 0 || verticalMove != 0)
-            OnRemovePower(MovingRate);
-        else if (mouseX != 0 || mouseY != 0)
-            OnRemovePower(MouseMoveRate);
-        else
-            OnRemovePower(IdleRate);
+        if(m_canLosePower)
+        {
+            //If moving player, or moving mouse, else idle
+            if (horizontalMove != 0 || verticalMove != 0)
+                OnRemovePower(MovingRate);
+            else if (mouseX != 0 || mouseY != 0)
+                OnRemovePower(MouseMoveRate);
+            else
+                OnRemovePower(IdleRate);
+        }
     }
 
     public void OnTriggerEnter2D(Collider2D col)
@@ -84,6 +97,10 @@ public class PlayerController : MonoBehaviour
                 OnBeenShot(bullet.Damage);
                 bullet.DestroyEarly();
             }
+        }
+        else if(col.gameObject.tag == Constants.RESTART_LEVEL_TAG)
+        {
+            m_game.RestartLevel();
         }
     }
 
@@ -132,5 +149,12 @@ public class PlayerController : MonoBehaviour
     void OnBeenShot(double damage)
     {
         OnRemovePower(damage);
+    }
+
+    IEnumerator Invulnerability(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+
+        m_canLosePower = true;
     }
 }

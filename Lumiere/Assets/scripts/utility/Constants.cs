@@ -26,5 +26,6 @@ public class Constants
     #region Tags
     public static string ENEMY_TAG = "Enemy";
     public static string BULLET_TAG = "Bullet";
+    public static string RESTART_LEVEL_TAG = "Restart";
     #endregion
 }
