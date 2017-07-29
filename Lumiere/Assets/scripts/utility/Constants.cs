@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IEnemy
+public class Constants
 {
-
-
+    public static readonly double TOTAL_HEALTH = 100;
 }
