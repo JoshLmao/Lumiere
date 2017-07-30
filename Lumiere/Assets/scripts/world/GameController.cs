@@ -200,4 +200,9 @@ public class GameController : MonoBehaviour
 
         Debug.Log("Spawned '" + m_enemies.Count + "' enemies. - '" + flyingSpawnCount + "' flying enemies. '" + normalSpawnCount + "' normal enemies");
     }
+
+    public void OnQuitGame()
+    {
+        Application.Quit();
+    }
 }
