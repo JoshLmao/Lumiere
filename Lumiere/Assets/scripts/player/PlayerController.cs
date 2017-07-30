@@ -6,6 +6,12 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
+    enum WalkingDirection
+    {
+        Left,
+        Right
+    }
+
     //Current health
     double m_currentHealth;
     public double CurrentHealth
@@ -48,6 +54,27 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     AudioClip m_deathSound;
 
+    [SerializeField]
+    SpriteRenderer[] m_sprites;
+
+    [SerializeField]
+    Transform m_leftSideBackpackPosition;
+
+    [SerializeField]
+    Transform m_rightSideBackpackPosition;
+
+    [SerializeField]
+    GameObject m_backpackFill;
+
+    [SerializeField]
+    Transform m_leftSideLightPosition;
+
+    [SerializeField]
+    Transform m_rightSideLightPosition;
+
+    [SerializeField]
+    GameObject m_backpackLight;
+
     float MoveSpeed = 5f;
     float JumpAmount = 5f;
 
@@ -59,6 +86,8 @@ public class PlayerController : MonoBehaviour
     bool m_canLosePower = false;
     float m_distanceToGround;
     AudioSource m_audioSource;
+    WalkingDirection m_currentWalkingDirection = WalkingDirection.Right; //default walking right
+    WalkingDirection m_lastWalkingDirection = WalkingDirection.Right; //default walking right
 
     #region MonoBehaviours
     void Start()
@@ -121,6 +150,25 @@ public class PlayerController : MonoBehaviour
     {
         float horizontalMove = Input.GetAxis("Horizontal");
         float verticalMove = Input.GetAxis("Vertical");
+
+        if (horizontalMove > 0)
+        {
+            m_currentWalkingDirection = WalkingDirection.Right;
+
+            if (m_lastWalkingDirection == WalkingDirection.Left)
+                OnWalkingDirectionChanged(m_lastWalkingDirection, WalkingDirection.Right);
+
+            m_lastWalkingDirection = WalkingDirection.Right;
+        }
+        else if(horizontalMove < 0)
+        {
+            m_currentWalkingDirection = WalkingDirection.Left;
+
+            if (m_lastWalkingDirection == WalkingDirection.Right)
+                OnWalkingDirectionChanged(m_lastWalkingDirection, m_currentWalkingDirection);
+
+            m_lastWalkingDirection = WalkingDirection.Left;
+        }
 
         m_rigidBody.velocity = new Vector2(horizontalMove * MoveSpeed, m_rigidBody.velocity.y);
 
@@ -200,6 +248,27 @@ public class PlayerController : MonoBehaviour
 
         m_audioSource.pitch = UnityEngine.Random.Range(0.9f, 1.2f);
         m_audioSource.PlayOneShot(m_hurtSound);
+    }
+
+    void OnWalkingDirectionChanged(WalkingDirection lastDirection, WalkingDirection newDirection)
+    {
+        foreach (SpriteRenderer sprite in m_sprites)
+            sprite.flipX = !sprite.flipX;
+
+        if (newDirection == WalkingDirection.Right)
+        {
+            m_backpackFill.transform.position = m_rightSideBackpackPosition.position;
+            m_backpackFill.transform.localEulerAngles = new Vector3(0f, 0f, 0f);
+
+            m_backpackLight.transform.position = m_rightSideLightPosition.position;
+        }
+        else if (newDirection == WalkingDirection.Left)
+        {
+            m_backpackFill.transform.position = m_leftSideBackpackPosition.position;
+            m_backpackFill.transform.localEulerAngles = new Vector3(0f, 180f, 0f);
+
+            m_backpackLight.transform.position = m_leftSideLightPosition.position;
+        }
     }
 
     #region Coroutines

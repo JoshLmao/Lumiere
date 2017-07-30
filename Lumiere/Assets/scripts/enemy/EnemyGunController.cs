@@ -23,6 +23,7 @@ public class EnemyGunController : MonoBehaviour
     bool m_isPlayerInRange = false;
     AudioSource m_audioSource;
     GameController m_game;
+    bool m_playerOnLeftSide = true;
 
     #region MonoBehaviours
     void Start()

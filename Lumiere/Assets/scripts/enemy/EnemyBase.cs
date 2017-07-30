@@ -21,7 +21,21 @@ public class EnemyBase : MonoBehaviour, IEnemy
     [SerializeField]
     AudioClip m_hurtSound;
 
+    [SerializeField]
+    SpriteRenderer[] m_sprites;
+
+    [SerializeField]
+    Transform m_leftSideBackpackPosition;
+
+    [SerializeField]
+    Transform m_rightSideBackpackPosition;
+
+    [SerializeField]
+    GameObject m_backpackFill;
+
     AudioSource m_audioSource;
+    protected bool m_playerOnLeftSide;
+    Transform m_playerTransform;
 
     #region  MonoBehaviours
     protected virtual void Start()
@@ -31,6 +45,7 @@ public class EnemyBase : MonoBehaviour, IEnemy
 
     protected virtual void Update()
     {
+        UpdatePlayerChangedSides();
     }
 
     public virtual void OnTriggerEnter2D(Collider2D col)
@@ -48,6 +63,33 @@ public class EnemyBase : MonoBehaviour, IEnemy
         }
     }
     #endregion
+
+    /// <summary>
+    /// Check every frame if player has gone over/under enemy and swapped sides
+    /// </summary>
+    void UpdatePlayerChangedSides()
+    {
+        if (m_playerTransform.position.x < transform.position.x)
+        {
+            //Left side
+            if (m_playerOnLeftSide)
+            {
+                OnPlayerChangedSide(false);
+                m_playerOnLeftSide = false;
+            }
+        }
+        else
+        {
+            //Right side
+
+            if (!m_playerOnLeftSide)
+            {
+                OnPlayerChangedSide(true);
+                m_playerOnLeftSide = true;
+            }
+
+        }
+    }
 
     public void RecieveHit(double damage)
     {
@@ -68,6 +110,7 @@ public class EnemyBase : MonoBehaviour, IEnemy
     public void Initialize(Transform player, double health, double powerDropped, double enemyGunDamage)
     {
         GetComponentInChildren<EnemyGunController>().Player = player;
+        m_playerTransform = player;
         Health = health;
         PowerDropped = powerDropped;
         TotalHealth = health;
@@ -96,4 +139,18 @@ public class EnemyBase : MonoBehaviour, IEnemy
         return (int)Math.Round(first, 0, MidpointRounding.ToEven);
     }
 
+    /// <summary>
+    /// When the player goes past the enemy, flip the enemys sprites to face him
+    /// </summary>
+    /// <param name="isOnRightSide">is the player on the right side of the enemy</param>
+    public void OnPlayerChangedSide(bool isOnRightSide)
+    {
+        foreach (SpriteRenderer sprite in m_sprites)
+            sprite.flipX = !sprite.flipX;
+
+        if(isOnRightSide)
+            m_backpackFill.transform.position = m_rightSideBackpackPosition.position;
+        else
+            m_backpackFill.transform.position = m_leftSideBackpackPosition.position;
+    }
 }
