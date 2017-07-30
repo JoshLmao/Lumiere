@@ -11,6 +11,9 @@ public class EnemyGunController : MonoBehaviour
     [SerializeField]
     GameObject m_bulletPrefab;
 
+    [SerializeField]
+    AudioClip m_laserSound;
+
     float m_rotationOffset = 0;
     float m_shootInterval = 3f;
     Coroutine m_activeRoutine = null;
@@ -18,12 +21,18 @@ public class EnemyGunController : MonoBehaviour
     float m_timeToSpawnEffect = 0f;
     EnemyBase m_owner;
     bool m_isPlayerInRange = false;
+    AudioSource m_audioSource;
+    GameController m_game;
 
     #region MonoBehaviours
     void Start()
     {
+        m_game = FindObjectOfType<GameController>();
         m_owner = GetComponentInParent<EnemyBase>();
         m_firePosition = transform.Find("FirePosition");
+        m_audioSource = GetComponent<AudioSource>();
+        if (m_audioSource == null)
+            Debug.LogError("Missing Audio Source on GameObject '" + gameObject.name + "'");
     }
 
     void Update()
@@ -40,7 +49,7 @@ public class EnemyGunController : MonoBehaviour
         {
             //Decide to shoot straight away, or delay and shoot
             bool shouldShootStraightAway = Math.Round((double)UnityEngine.Random.Range(0, 1), 0) == 0;
-            if (shouldShootStraightAway)
+            if (shouldShootStraightAway && !m_game.IsGameFinished)
             {
                 ShootAtPlayer();
             }
@@ -73,6 +82,9 @@ public class EnemyGunController : MonoBehaviour
         {
             Effect();
             m_timeToSpawnEffect = Time.time + 1 / EffectSpawnRate;
+
+            m_audioSource.pitch = UnityEngine.Random.Range(0.9f, 1.2f);
+            m_audioSource.PlayOneShot(m_laserSound);
         }
     }
 
@@ -91,7 +103,10 @@ public class EnemyGunController : MonoBehaviour
     IEnumerator WaitAndShoot(float seconds)
     {
         yield return new WaitForSeconds(seconds);
-        ShootAtPlayer();
-        StartCoroutine(StartWaitAndShoot());
+        if (!m_game.IsGameFinished)
+        {
+            ShootAtPlayer();
+            StartCoroutine(StartWaitAndShoot());
+        }
     }
 }

@@ -21,6 +21,9 @@ public class UIController : MonoBehaviour {
     [SerializeField]
     Text m_endGameScore;
 
+    [SerializeField]
+    Text m_insultThePlayerText;
+
     GameController m_game;
 
 	void Start ()
@@ -35,6 +38,17 @@ public class UIController : MonoBehaviour {
     {
         m_healthSlider.value = (float)m_game.Player.CurrentHealth;
         m_scoreText.text = "Score: " + m_game.Score;
+
+        //Nice. Insult the player. Good idea
+        if(m_game.Score == 0)
+        {
+            m_insultThePlayerText.gameObject.SetActive(true);
+            m_insultThePlayerText.text = "You suck!";
+        }
+        else
+        {
+            m_insultThePlayerText.gameObject.SetActive(false);
+        }
     }
 
     /// <summary>

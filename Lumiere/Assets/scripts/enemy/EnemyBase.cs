@@ -18,10 +18,15 @@ public class EnemyBase : MonoBehaviour, IEnemy
 
     public event Action<EnemyBase> OnEnemyKilled;
 
-    #region  MonoBehaviours
+    [SerializeField]
+    AudioClip m_hurtSound;
 
+    AudioSource m_audioSource;
+
+    #region  MonoBehaviours
     protected virtual void Start()
     {
+        m_audioSource = GetComponent<AudioSource>();
     }
 
     protected virtual void Update()
@@ -47,10 +52,16 @@ public class EnemyBase : MonoBehaviour, IEnemy
     public void RecieveHit(double damage)
     {
         Health -= damage;
+
         Debug.Log("Player hit for '" + damage + "' damage");
         if (Health < 0)
         {
             OnKilled();
+        }
+        else
+        {
+            m_audioSource.pitch = UnityEngine.Random.Range(0.9f, 1.2f);
+            m_audioSource.PlayOneShot(m_hurtSound);
         }
     }
 
@@ -68,7 +79,6 @@ public class EnemyBase : MonoBehaviour, IEnemy
         InvokeEnemyKilled();
         Destroy(this.gameObject);
     }
-
 
     void InvokeEnemyKilled()
     {

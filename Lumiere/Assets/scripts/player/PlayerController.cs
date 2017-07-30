@@ -39,6 +39,15 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     public double JumpingRate = 0.008;
 
+    [SerializeField]
+    AudioClip m_hurtSound;
+
+    [SerializeField]
+    AudioClip m_jumpSound;
+
+    [SerializeField]
+    AudioClip m_deathSound;
+
     float MoveSpeed = 5f;
     float JumpAmount = 5f;
 
@@ -49,12 +58,14 @@ public class PlayerController : MonoBehaviour
     bool m_isJumping = false;
     bool m_canLosePower = false;
     float m_distanceToGround;
+    AudioSource m_audioSource;
 
     #region MonoBehaviours
     void Start()
     {
         m_game = FindObjectOfType<GameController>();
         m_rigidBody = GetComponentInChildren<Rigidbody2D>();
+        m_audioSource = GetComponent<AudioSource>();
 
         m_distanceToGround = GetComponentInChildren<Collider2D>().bounds.extents.y;
         SpawnInvulnerability();
@@ -139,6 +150,9 @@ public class PlayerController : MonoBehaviour
         {
             m_rigidBody.velocity = new Vector2(m_rigidBody.velocity.x, Constants.PLAYER_JUMP_FORCE);
             m_isJumping = true;
+
+            m_audioSource.pitch = UnityEngine.Random.Range(0.7f, 1.3f);
+            m_audioSource.PlayOneShot(m_jumpSound);
         }
     }
 
@@ -170,6 +184,9 @@ public class PlayerController : MonoBehaviour
         {
             m_game.OnPlayerKilled();
             CurrentHealth = 0;
+
+            m_audioSource.pitch = UnityEngine.Random.Range(0.7f, 1.4f);
+            m_audioSource.PlayOneShot(m_deathSound);
         }
     }
 
@@ -180,6 +197,9 @@ public class PlayerController : MonoBehaviour
     void OnBeenShot(double damage)
     {
         OnRemovePower(damage);
+
+        m_audioSource.pitch = UnityEngine.Random.Range(0.9f, 1.2f);
+        m_audioSource.PlayOneShot(m_hurtSound);
     }
 
     #region Coroutines

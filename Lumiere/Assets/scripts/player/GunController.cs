@@ -11,6 +11,9 @@ public class GunController : MonoBehaviour
     [SerializeField]
     Transform m_bulletTrailPrefab;
 
+    [SerializeField]
+    AudioClip m_laserSound;
+
     public float FireRate = 0f;
     public LayerMask m_hitMask;
     public float EffectSpawnRate = 10f;
@@ -19,6 +22,7 @@ public class GunController : MonoBehaviour
     float m_timeToSpawnEffect = 0f;
     PlayerController m_player;
     GameController m_game;
+    AudioSource m_audioSource;
 
     public event Action<double> OnKilledEnemy;
 
@@ -26,6 +30,9 @@ public class GunController : MonoBehaviour
     {
         m_player = transform.parent.GetComponentInParent<PlayerController>();
         m_game = FindObjectOfType<GameController>();
+        m_audioSource = GetComponent<AudioSource>();
+        if (m_audioSource == null)
+            Debug.LogError("Missing Audio Source on GameObject '" + gameObject.name + "'");
     }
 
     void Update()
@@ -60,6 +67,10 @@ public class GunController : MonoBehaviour
         {
             Effect();
             m_timeToSpawnEffect = Time.time + 1 / EffectSpawnRate;
+
+            //Randomize pitch every shot
+            m_audioSource.pitch = UnityEngine.Random.Range(0.8f, 1.2f);
+            m_audioSource.PlayOneShot(m_laserSound);
         }
 
         Debug.DrawLine(firePointPosition, (mousePosition - firePointPosition) * 100, Color.cyan);

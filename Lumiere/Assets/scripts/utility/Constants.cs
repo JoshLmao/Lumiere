@@ -15,7 +15,7 @@ public class Constants
     public static readonly float ENEMY_MAX_HEALTH = 200;
 
     public static readonly float ENEMY_MIN_POWER_DROPPED = 15;
-    public static readonly float ENEMY_MAX_POWER_DROPPED = 70;
+    public static readonly float ENEMY_MAX_POWER_DROPPED = 55;
 
     public static readonly float ENEMY_MIN_GUN_DAMAGE = 5f;
     public static readonly float ENEMY_MAX_GUN_DAMAGE = 20f;
