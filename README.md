@@ -9,4 +9,5 @@ Lumière was made as part of Ludum Dare 39 which had the theme "Running out of p
 
 # Links
 * Windows: https://github.com/JoshLmao/Lumiere/releases/tag/v1.0
+* WebGL: https://joshlmao.itch.io/lumiere
 * Source Code: https://github.com/JoshLmao/Lumiere
