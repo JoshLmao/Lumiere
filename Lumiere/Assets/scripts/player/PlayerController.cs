@@ -56,6 +56,41 @@ public class PlayerController : MonoBehaviour
         SpawnInvulnerability();
     }
 
+    void Update()
+    {
+        UpdateMovement();
+
+        UpdateJump();
+    }
+
+    public void OnTriggerEnter2D(Collider2D col)
+    {
+        //Detect when player gets hit by a bulley
+        if (col.gameObject.tag == Constants.BULLET_TAG)
+        {
+            var bullet = col.gameObject.GetComponent<MoveBulletTrail>();
+            if (bullet.Owner != this.gameObject)
+            {
+                OnBeenShot(bullet.Damage);
+                bullet.DestroyEarly();
+            }
+        }
+        else if (col.gameObject.tag == Constants.RESTART_LEVEL_TAG)
+        {
+            m_game.RestartLevel();
+        }
+    }
+
+    public void OnCollisionEnter2D(Collision2D collision)
+    {
+        if(collision.collider.gameObject.layer == Constants.FLOOR_LAYER)
+        {
+            if(m_isJumping)
+                StartCoroutine(JumpCooldown(Constants.PLAYER_JUMP_COOLDOWN));
+        }
+    }
+    #endregion
+
     /// <summary>
     /// When the player spawns, give them invulnerability for a little bit
     /// </summary>
@@ -64,7 +99,7 @@ public class PlayerController : MonoBehaviour
         StartCoroutine(Invulnerability(1.5f));
     }
 
-    void Update()
+    void UpdateMovement()
     {
         float horizontalMove = Input.GetAxis("Horizontal");
         float verticalMove = Input.GetAxis("Vertical");
@@ -86,29 +121,14 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void OnTriggerEnter2D(Collider2D col)
+    void UpdateJump()
     {
-        //Detect when player gets hit by a bulley
-        if (col.gameObject.tag == Constants.BULLET_TAG)
+        float jumpMove = Input.GetAxis("Jump");
+        if (jumpMove > 0 && !m_isJumping)
         {
-            var bullet = col.gameObject.GetComponent<MoveBulletTrail>();
-            if (bullet.Owner != this.gameObject)
-            {
-                OnBeenShot(bullet.Damage);
-                bullet.DestroyEarly();
-            }
+            m_rigidBody.velocity = new Vector2(m_rigidBody.velocity.x, Constants.PLAYER_JUMP_FORCE);
+            m_isJumping = true;
         }
-        else if (col.gameObject.tag == Constants.RESTART_LEVEL_TAG)
-        {
-            m_game.RestartLevel();
-        }
-    }
-
-    #endregion
-
-    bool IsGrounded()
-    {
-        return Physics.Raycast(transform.position, -Vector3.up, (float)(m_distanceToGround));
     }
 
     /// <summary>
@@ -151,10 +171,18 @@ public class PlayerController : MonoBehaviour
         OnRemovePower(damage);
     }
 
+    #region Coroutines
     IEnumerator Invulnerability(float seconds)
     {
         yield return new WaitForSeconds(seconds);
 
         m_canLosePower = true;
     }
+
+    IEnumerator JumpCooldown(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        m_isJumping = false;
+    }
+    #endregion
 }

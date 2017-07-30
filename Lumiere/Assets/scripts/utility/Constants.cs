@@ -8,6 +8,8 @@ public class Constants
     /// Total health of player
     /// </summary>
     public static readonly double TOTAL_HEALTH = 100;
+    public static readonly float PLAYER_JUMP_COOLDOWN = 0.25f;
+    public static readonly float PLAYER_JUMP_FORCE = 7f;
 
     public static readonly float ENEMY_MIN_HEALTH = 80;
     public static readonly float ENEMY_MAX_HEALTH = 200;
@@ -24,8 +26,12 @@ public class Constants
     public static readonly float ENEMY_RANGE_TO_PLAYER = 7f;
 
     #region Tags
-    public static string ENEMY_TAG = "Enemy";
-    public static string BULLET_TAG = "Bullet";
-    public static string RESTART_LEVEL_TAG = "Restart";
+    public static readonly string ENEMY_TAG = "Enemy";
+    public static readonly string BULLET_TAG = "Bullet";
+    public static readonly string RESTART_LEVEL_TAG = "Restart";
+    #endregion
+
+    #region Layers
+    public static readonly int FLOOR_LAYER = 9;
     #endregion
 }
