@@ -61,7 +61,7 @@ public abstract class ProcessingControllerBase : MonoBehaviour
 
     float BetweenValues()
     {
-        var percentage = (m_game.Player.CurrentHealth / 100) * Constants.TOTAL_HEALTH;
+        var percentage = (m_game.Player.CurrentHealth / 100) * Constants.PLAYER_TOTAL_HEALTH;
         var range = MinimumValue + MaximumValue;
         float betweenOneZero = (float)percentage / 100;
         var value = range * betweenOneZero;
@@ -71,7 +71,7 @@ public abstract class ProcessingControllerBase : MonoBehaviour
 
     float Remainder()
     {
-        var percentage = (m_game.Player.CurrentHealth / 100) * Constants.TOTAL_HEALTH;
+        var percentage = (m_game.Player.CurrentHealth / 100) * Constants.PLAYER_TOTAL_HEALTH;
         var range = MinimumValue + MaximumValue;
         float betweenOneZero = (float)percentage / 100;
         var value = range * betweenOneZero;
@@ -81,7 +81,7 @@ public abstract class ProcessingControllerBase : MonoBehaviour
 
     float MinimumLargerThanMaximum()
     {
-        var percentage = (m_game.Player.CurrentHealth / 100) * Constants.TOTAL_HEALTH;
+        var percentage = (m_game.Player.CurrentHealth / 100) * Constants.PLAYER_TOTAL_HEALTH;
         float betweenOneZero = (float)percentage / 100; //percetage as a number between 1 and 0
 
         var range = MinimumValue - MaximumValue;

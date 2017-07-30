@@ -75,9 +75,17 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     GameObject m_backpackLight;
 
+    [SerializeField]
+    AudioSource m_footstepAudioSource;
+
+    [SerializeField]
+    AudioClip m_footStepSound;
+
     float MoveSpeed = 5f;
     float JumpAmount = 5f;
+    float FootstepDistance = 15f;
 
+    float m_changingFootstep;
     GameController m_game;
     Rigidbody2D m_rigidBody;
     GunController m_gun;
@@ -130,12 +138,18 @@ public class PlayerController : MonoBehaviour
 
     public void OnCollisionEnter2D(Collision2D collision)
     {
-        if(collision.collider.gameObject.layer == Constants.FLOOR_LAYER)
+        if (collision.collider.gameObject.layer == Constants.FLOOR_LAYER)
         {
-            if(m_isJumping)
+            if (m_isJumping)
                 StartCoroutine(JumpCooldown(Constants.PLAYER_JUMP_COOLDOWN));
         }
+        else if (collision.gameObject.tag == Constants.ENEMY_TAG)
+        {
+            //Remove power when colliding with an enemy
+            OnRemovePower(Constants.PLAYER_TOUCH_ENEMY_POWER_LOSS);
+        }
     }
+
     #endregion
 
     /// <summary>
@@ -160,7 +174,7 @@ public class PlayerController : MonoBehaviour
 
             m_lastWalkingDirection = WalkingDirection.Right;
         }
-        else if(horizontalMove < 0)
+        else if (horizontalMove < 0)
         {
             m_currentWalkingDirection = WalkingDirection.Left;
 
@@ -185,9 +199,17 @@ public class PlayerController : MonoBehaviour
                 OnRemovePower(MovingRate);
             if (mouseX != 0 || mouseY != 0)
                 OnRemovePower(MouseMoveRate);
-            
-            if(isIdle)
+
+            if (isIdle)
                 OnRemovePower(IdleRate);
+        }
+
+        m_changingFootstep += horizontalMove < 0 ? -horizontalMove : horizontalMove;
+        if (m_changingFootstep >= FootstepDistance && !m_isJumping)
+        {
+            m_footstepAudioSource.pitch = UnityEngine.Random.Range(0.9f, 1.1f);
+            m_footstepAudioSource.PlayOneShot(m_footStepSound);
+            m_changingFootstep = 0;
         }
     }
 
@@ -210,8 +232,8 @@ public class PlayerController : MonoBehaviour
     /// <param name="powerAmount">The amount of power to add to the player</param>
     public void AddPower(double powerAmount)
     {
-        if (CurrentHealth + powerAmount > Constants.TOTAL_HEALTH)
-            CurrentHealth = Constants.TOTAL_HEALTH;
+        if (CurrentHealth + powerAmount > Constants.PLAYER_TOTAL_HEALTH)
+            CurrentHealth = Constants.PLAYER_TOTAL_HEALTH;
         else
             CurrentHealth += powerAmount;
     }

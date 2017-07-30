@@ -21,7 +21,7 @@ public class LightController : MonoBehaviour {
 
     void Update ()
     {
-        var percentage = (m_player.CurrentHealth / 100) * Constants.TOTAL_HEALTH;
+        var percentage = (m_player.CurrentHealth / 100) * Constants.PLAYER_TOTAL_HEALTH;
         var range = MinIntensity + MaxIntensity;
         float betweenOneZero = (float)percentage / 100;
         m_light.intensity = range * betweenOneZero; //between 1 and 0

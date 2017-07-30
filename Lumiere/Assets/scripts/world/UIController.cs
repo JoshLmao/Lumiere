@@ -31,7 +31,7 @@ public class UIController : MonoBehaviour {
         OnRestartGame();
 
         m_game = FindObjectOfType<GameController>();
-        m_healthSlider.maxValue = (float)Constants.TOTAL_HEALTH;
+        m_healthSlider.maxValue = (float)Constants.PLAYER_TOTAL_HEALTH;
 	}
 	
 	void Update ()

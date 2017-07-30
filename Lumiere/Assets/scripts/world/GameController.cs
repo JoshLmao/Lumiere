@@ -127,7 +127,7 @@ public class GameController : MonoBehaviour
         playerObject.transform.position = m_playerSpawnPosition.transform.position;
 
         Player = playerObject.GetComponent<PlayerController>();
-        Player.CurrentHealth = Constants.TOTAL_HEALTH;
+        Player.CurrentHealth = Constants.PLAYER_TOTAL_HEALTH;
 
         //Incase prefab is inactive
         if (!playerObject.activeInHierarchy)

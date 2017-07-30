@@ -18,7 +18,7 @@ public class BackpackHealth : MonoBehaviour {
 	
 	void Update ()
     {
-        var percentage = (m_player.CurrentHealth / 100) * Constants.TOTAL_HEALTH;
+        var percentage = (m_player.CurrentHealth / 100) * Constants.PLAYER_TOTAL_HEALTH;
         m_image.fillAmount = (float)percentage / 100;
     }
 }

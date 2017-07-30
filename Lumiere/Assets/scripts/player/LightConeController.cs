@@ -19,7 +19,7 @@ public class LightConeController : MonoBehaviour {
 	
 	void Update ()
     {
-        var percentage = (m_player.CurrentHealth / 100) * Constants.TOTAL_HEALTH;
+        var percentage = (m_player.CurrentHealth / 100) * Constants.PLAYER_TOTAL_HEALTH;
         var range = MinimumOpacity + MaximumOpacity;
         float betweenOneZero = (float)percentage / 100;
 
