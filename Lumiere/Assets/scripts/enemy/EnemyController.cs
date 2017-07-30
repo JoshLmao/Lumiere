@@ -20,12 +20,10 @@ public class EnemyController : MonoBehaviour, IEnemy
 
     void Start()
     {
-
     }
 
     void Update()
     {
-
     }
 
     public void RecieveHit(double damage)

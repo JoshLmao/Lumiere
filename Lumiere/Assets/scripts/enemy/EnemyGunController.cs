@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -38,6 +39,13 @@ public class EnemyGunController : MonoBehaviour
         m_isPlayerInRange = Vector3.Distance(transform.position, Player.transform.position) < Constants.ENEMY_RANGE_TO_PLAYER;
         if (m_isPlayerInRange && m_activeRoutine == null)
         {
+            //Decide to shoot straight away, or delay and shoot
+            bool shouldShootStraightAway = Math.Round((double)UnityEngine.Random.Range(0, 1), 0) == 0;
+            if (shouldShootStraightAway)
+            {
+                ShootAtPlayer();
+            }
+
             m_activeRoutine = StartCoroutine(StartWaitAndShoot());
             Debug.Log("Player in range. Shooting...");
         }

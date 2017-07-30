@@ -18,16 +18,21 @@ public class GunController : MonoBehaviour
     float m_timeToFire = 0f;
     float m_timeToSpawnEffect = 0f;
     PlayerController m_player;
+    GameController m_game;
 
     public event Action<double> OnKilledEnemy;
 
     void Start()
     {
         m_player = transform.parent.GetComponentInParent<PlayerController>();
+        m_game = FindObjectOfType<GameController>();
     }
 
     void Update()
     {
+        if (m_game.IsGameFinished)
+            return;
+
         if (FireRate == 0)
         {
             if (Input.GetButtonDown("Fire1"))

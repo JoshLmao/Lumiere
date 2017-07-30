@@ -58,6 +58,9 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (m_game.IsGameFinished)
+            return;
+
         UpdateMovement();
 
         UpdateJump();
