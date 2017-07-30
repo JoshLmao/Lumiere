@@ -135,7 +135,7 @@ public class PlayerController : MonoBehaviour
     {
         CurrentHealth -= amount;
 
-        if (CurrentHealth < 0)
+        if (CurrentHealth < 0 && !m_game.IsGameFinished)
         {
             m_game.OnPlayerKilled();
             CurrentHealth = 0;

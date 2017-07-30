@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using System;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
@@ -15,6 +16,9 @@ public class GameController : MonoBehaviour
 
     [SerializeField]
     GameObject m_masterGlobalObject;
+
+    [SerializeField]
+    UIController m_ui;
 
     [SerializeField]
     GameObject m_playerPrefab;
@@ -31,6 +35,8 @@ public class GameController : MonoBehaviour
     public PlayerController Player;
     public Transform[] m_enemySpawnLocations;
 
+    public bool IsGameFinished { get; set; }
+
     List<EnemyController> m_enemies = new List<EnemyController>();
     GameObject m_playerObject;
 
@@ -39,14 +45,7 @@ public class GameController : MonoBehaviour
     {
         DontDestroyOnLoad(m_masterGlobalObject);
 
-        GameObject playerObject = Instantiate(m_playerPrefab);
-        playerObject.transform.position = m_playerSpawnPosition.transform.position;
-
-        Player = playerObject.GetComponent<PlayerController>();
-        Player.CurrentHealth = Constants.TOTAL_HEALTH;
-
-        if (!playerObject.activeInHierarchy)
-            playerObject.SetActive(true);
+        StartSpawnPlayer();
 
         SpawnEnemies(m_enemySpawnLocations);
     }
@@ -88,10 +87,6 @@ public class GameController : MonoBehaviour
         AddToScore(enemy.ScoreAmount);
     }
 
-    public void OnPlayerKilled()
-    {
-        Debug.Log("Game Over, son");
-    }
 
     public void AddToScore(int amount)
     {
@@ -109,22 +104,57 @@ public class GameController : MonoBehaviour
     /// </summary>
     void StartSpawnPlayer()
     {
+        GameObject playerObject = Instantiate(m_playerPrefab);
+        playerObject.transform.position = m_playerSpawnPosition.transform.position;
 
+        Player = playerObject.GetComponent<PlayerController>();
+        Player.CurrentHealth = Constants.TOTAL_HEALTH;
+
+        //Incase prefab is inactive
+        if (!playerObject.activeInHierarchy)
+            playerObject.SetActive(true);
     }
 
     public void RestartLevel()
     {
-        foreach(Transform t in m_enemySpawnParent.transform)
-        {
-            //Only destroy spawned enemies
-            if(t.gameObject.GetComponent<EnemyController>() != null)
-                Destroy(t.gameObject);
-        }
+        DestroyAllSpawnedEnemies();
 
         //Dont reload level. Just change player pos and respawn enemies
         Player.gameObject.transform.position = m_playerSpawnPosition.transform.position;
         Player.SpawnInvulnerability();
 
+        SpawnEnemies(m_enemySpawnLocations);
+    }
+
+    void DestroyAllSpawnedEnemies()
+    {
+        foreach (Transform t in m_enemySpawnParent.transform)
+        {
+            //Only destroy spawned enemies
+            if (t.gameObject.GetComponent<EnemyController>() != null)
+                Destroy(t.gameObject);
+        }
+    }
+
+    public void OnPlayerKilled()
+    {
+        m_ui.OnGameEnded();
+        IsGameFinished = true;
+    }
+
+    /// <summary>
+    /// Done by the "Restart" button once game has finished
+    /// </summary>
+    public void OnRestartScene()
+    {
+        IsGameFinished = false;
+        Score = 0;
+        m_ui.OnRestartGame();
+
+        Destroy(Player.gameObject);
+        DestroyAllSpawnedEnemies();
+
+        StartSpawnPlayer();
         SpawnEnemies(m_enemySpawnLocations);
     }
 }
