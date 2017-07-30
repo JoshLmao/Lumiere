@@ -27,6 +27,9 @@ public class GameController : MonoBehaviour
     GameObject m_enemyPrefab;
 
     [SerializeField]
+    GameObject m_flyingEnemyPrefab;
+
+    [SerializeField]
     GameObject m_enemySpawnParent;
 
     [SerializeField]
@@ -35,11 +38,14 @@ public class GameController : MonoBehaviour
     [SerializeField]
     GameObject m_masterEnemySpawnLocations;
 
+    [SerializeField]
+    GameObject m_masterFlyingEnemySpawnLocations;
+
     public PlayerController Player;
 
     public bool IsGameFinished { get; set; }
 
-    List<EnemyController> m_enemies = new List<EnemyController>();
+    List<EnemyBase> m_enemies = new List<EnemyBase>();
     GameObject m_playerObject;
     double m_multiplier = 1;
 
@@ -50,8 +56,7 @@ public class GameController : MonoBehaviour
 
         StartSpawnPlayer();
 
-        Transform[] spawnLocs = m_masterEnemySpawnLocations.GetComponentsInChildren<Transform>();
-        SpawnEnemies(spawnLocs);
+        SpawnEnemies();
     }
 
     void Start ()
@@ -65,20 +70,21 @@ public class GameController : MonoBehaviour
 	}
     #endregion
 
-    void SpawnEnemies(Transform[] spawnLocs)
+    int SpawnEnemies(Transform[] spawnLocs, GameObject enemyPrefab, double range)
     {
-        if (m_enemies.Count > 0)
-            m_enemies.Clear();
-
+        int spawnCount = 0;
         foreach(Transform t in spawnLocs)
         {
+            if (t == m_masterFlyingEnemySpawnLocations.transform || t == m_masterEnemySpawnLocations.transform)
+                continue;
+
             //Way to determine if to spawn enemies. As multiplier goes up, less chance of spawning enemies
-            bool shouldSpawn = Math.Round(UnityEngine.Random.Range(0, (float)m_multiplier), 0) == 0;
+            bool shouldSpawn = Math.Round(UnityEngine.Random.Range(0, (float)range), 0) == 0;
             if (!shouldSpawn)
                 continue;
 
-            GameObject enemyObject = Instantiate(m_enemyPrefab, t.position, t.rotation, m_enemySpawnParent.transform);
-            EnemyController enemy = enemyObject.GetComponent<EnemyController>();
+            GameObject enemyObject = Instantiate(enemyPrefab, t.position, t.rotation, m_enemySpawnParent.transform);
+            EnemyBase enemy = enemyObject.GetComponent<EnemyBase>();
             enemy.OnEnemyKilled += OnEnemyKilled;
 
             enemy.Initialize(Player.gameObject.transform, 
@@ -87,12 +93,13 @@ public class GameController : MonoBehaviour
                 UnityEngine.Random.Range(Constants.ENEMY_MIN_GUN_DAMAGE, Constants.ENEMY_MAX_GUN_DAMAGE));
 
             m_enemies.Add(enemy);
+            spawnCount++;
         }
 
-        Debug.Log("Spawned '" + m_enemies.Count + "' enemies");
+        return spawnCount;
     }
 
-    void OnEnemyKilled(EnemyController enemy)
+    void OnEnemyKilled(EnemyBase enemy)
     {
         Player.AddPower(enemy.PowerDropped);
         AddToScore(enemy.ScoreAmount);
@@ -135,10 +142,9 @@ public class GameController : MonoBehaviour
         Player.gameObject.transform.position = m_playerSpawnPosition.transform.position;
         Player.SpawnInvulnerability();
 
-        Transform[] spawnLocs = m_masterEnemySpawnLocations.GetComponentsInChildren<Transform>();
-        SpawnEnemies(spawnLocs);
+        SpawnEnemies();
 
-        m_multiplier += 0.5;
+                m_multiplier += 0.5;
         Debug.Log("Increased multiplier to '" + m_multiplier + "'");
     }
 
@@ -172,7 +178,19 @@ public class GameController : MonoBehaviour
 
         StartSpawnPlayer();
 
+        SpawnEnemies();
+    }
+
+    void SpawnEnemies()
+    {
+        if(m_enemies.Count > 0)
+            m_enemies.Clear();
+
         Transform[] spawnLocs = m_masterEnemySpawnLocations.GetComponentsInChildren<Transform>();
-        SpawnEnemies(spawnLocs);
+        var normalSpawnCount = SpawnEnemies(spawnLocs, m_enemyPrefab, m_multiplier);
+        Transform[] flyingSpawnLocs = m_masterFlyingEnemySpawnLocations.GetComponentsInChildren<Transform>();
+        int flyingSpawnCount = SpawnEnemies(flyingSpawnLocs, m_flyingEnemyPrefab, 2);
+
+        Debug.Log("Spawned '" + m_enemies.Count + "' enemies. - '" + flyingSpawnCount + "' flying enemies. '" + normalSpawnCount + "' normal enemies");
     }
 }

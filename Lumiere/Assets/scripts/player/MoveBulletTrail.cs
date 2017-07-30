@@ -6,7 +6,7 @@ public class MoveBulletTrail : MonoBehaviour {
 
     public GameObject Owner = null;
     public float m_moveSpeed = 230f;
-    public float m_destroyAfterSeconds = 2f;
+    public float m_destroyAfterSeconds = 1f;
 
     //Damage to deal to whoever gets hit
     public double Damage = 0;

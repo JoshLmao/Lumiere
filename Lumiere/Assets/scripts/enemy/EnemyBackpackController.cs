@@ -9,7 +9,7 @@ public class EnemyBackpackController : MonoBehaviour {
     Image m_image;
 
     [SerializeField]
-    EnemyController m_enemy;
+    EnemyBase m_enemy;
 
     void Start()
     {

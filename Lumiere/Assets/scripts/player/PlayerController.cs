@@ -34,6 +34,10 @@ public class PlayerController : MonoBehaviour
     /// The rate that will be removed from the player's power if the player ha sshot a bullet
     /// </summary>
     public double ShootingRate = 0.01;
+    /// <summary>
+    /// The rate that will be removed from the player's power if the player is jumping
+    /// </summary>
+    public double JumpingRate = 0.008;
 
     float MoveSpeed = 5f;
     float JumpAmount = 5f;
@@ -115,11 +119,15 @@ public class PlayerController : MonoBehaviour
         if (m_canLosePower)
         {
             //If moving player, or moving mouse, else idle
+            bool isIdle = !m_isJumping && (horizontalMove == 0 && verticalMove == 0);/* && (mouseX == 0 && mouseY == 0);*/
+            if (m_isJumping)
+                OnRemovePower(JumpingRate);
             if (horizontalMove != 0 || verticalMove != 0)
                 OnRemovePower(MovingRate);
-            else if (mouseX != 0 || mouseY != 0)
+            if (mouseX != 0 || mouseY != 0)
                 OnRemovePower(MouseMoveRate);
-            else
+            
+            if(isIdle)
                 OnRemovePower(IdleRate);
         }
     }

@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class EnemyGunController : MonoBehaviour
 {
-
     public Transform Player;
     public float EffectSpawnRate = 10f;
 
@@ -17,13 +16,13 @@ public class EnemyGunController : MonoBehaviour
     Coroutine m_activeRoutine = null;
     Transform m_firePosition = null;
     float m_timeToSpawnEffect = 0f;
-    EnemyController m_owner;
+    EnemyBase m_owner;
     bool m_isPlayerInRange = false;
 
     #region MonoBehaviours
     void Start()
     {
-        m_owner = GetComponentInParent<EnemyController>();
+        m_owner = GetComponentInParent<EnemyBase>();
         m_firePosition = transform.Find("FirePosition");
     }
 
