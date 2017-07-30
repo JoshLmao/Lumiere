@@ -36,7 +36,7 @@ public class EnemyGunController : MonoBehaviour
             Debug.LogError("Missing Audio Source on GameObject '" + gameObject.name + "'");
     }
 
-    void Update()
+    void FixedUpdate()
     {
         //Follows aim to player
         Vector3 diff = Player.transform.position - transform.position;

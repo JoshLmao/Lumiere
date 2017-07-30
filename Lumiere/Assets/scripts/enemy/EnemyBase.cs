@@ -43,7 +43,7 @@ public class EnemyBase : MonoBehaviour, IEnemy
         m_audioSource = GetComponent<AudioSource>();
     }
 
-    protected virtual void Update()
+    protected virtual void FixedUpdate()
     {
         UpdatePlayerChangedSides();
     }

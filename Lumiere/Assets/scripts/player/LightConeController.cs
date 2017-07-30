@@ -17,7 +17,7 @@ public class LightConeController : MonoBehaviour {
         m_material = GetComponent<MeshRenderer>().materials[0];
 	}
 	
-	void Update ()
+	void FixedUpdate()
     {
         var percentage = (m_player.CurrentHealth / 100) * Constants.PLAYER_TOTAL_HEALTH;
         var range = MinimumOpacity + MaximumOpacity;

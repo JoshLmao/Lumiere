@@ -15,7 +15,7 @@ public class CameraController : MonoBehaviour {
 
     }
 	
-	void Update ()
+	void FixedUpdate()
     {
         if(m_player == null)
             m_player = m_game.Player;

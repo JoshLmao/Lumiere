@@ -30,7 +30,7 @@ public abstract class ProcessingControllerBase : MonoBehaviour
         SetDefaultValue();
     }
 
-    void Update()
+    void FixedUpdate()
     {
         //No better way of naming these
         switch(CalculateValue)

@@ -108,7 +108,7 @@ public class PlayerController : MonoBehaviour
         SpawnInvulnerability();
     }
 
-    void Update()
+    void FixedUpdate()
     {
         if (m_game.IsGameFinished)
             return;

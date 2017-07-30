@@ -34,7 +34,7 @@ public class UIController : MonoBehaviour {
         m_healthSlider.maxValue = (float)Constants.PLAYER_TOTAL_HEALTH;
 	}
 	
-	void Update ()
+	void FixedUpdate()
     {
         m_healthSlider.value = (float)m_game.Player.CurrentHealth;
         m_scoreText.text = "Score: " + m_game.Score.ToString("N0");

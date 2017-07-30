@@ -6,7 +6,7 @@ public class ArmRotation : MonoBehaviour {
 
     public int RotationOffset = 90;
 	
-	void Update ()
+	void FixedUpdate()
     {
         Vector3 diff = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
         diff.Normalize();

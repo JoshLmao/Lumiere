@@ -16,7 +16,7 @@ public class MoveBulletTrail : MonoBehaviour {
         StartCoroutine(DestoryAfter(m_destroyAfterSeconds));
     }
 
-	void Update ()
+	void FixedUpdate()
     {
         transform.Translate(Vector3.right * Time.deltaTime * m_moveSpeed);
 	}

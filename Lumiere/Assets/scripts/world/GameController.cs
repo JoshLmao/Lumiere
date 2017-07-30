@@ -64,9 +64,10 @@ public class GameController : MonoBehaviour
 
 	}
 	
-	void Update ()
+	void FixedUpdate()
     {
-		
+        if (Input.GetKeyDown(KeyCode.Escape))
+            OnQuitGame();
 	}
     #endregion
 
@@ -203,6 +204,7 @@ public class GameController : MonoBehaviour
 
     public void OnQuitGame()
     {
+        Debug.Log("Exiting game...");
         Application.Quit();
     }
 }

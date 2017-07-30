@@ -16,7 +16,7 @@ public class EnemyBackpackController : MonoBehaviour {
 
     }
 
-    void Update()
+    void FixedUpdate()
     {
         var percentage = m_enemy.Health / m_enemy.TotalHealth;
         m_image.fillAmount = (float)percentage;
