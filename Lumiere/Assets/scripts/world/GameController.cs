@@ -134,8 +134,15 @@ public class GameController : MonoBehaviour
             playerObject.SetActive(true);
     }
 
+    /// <summary>
+    /// When the player falls down hole at end of level. Teleport to beginning
+    /// </summary>
     public void RestartLevel()
     {
+        //Player dies when falling into restart
+        if (IsGameFinished)
+            return;
+
         DestroyAllSpawnedEnemies();
 
         //Dont reload level. Just change player pos and respawn enemies

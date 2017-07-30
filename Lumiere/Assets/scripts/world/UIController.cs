@@ -37,7 +37,7 @@ public class UIController : MonoBehaviour {
 	void Update ()
     {
         m_healthSlider.value = (float)m_game.Player.CurrentHealth;
-        m_scoreText.text = "Score: " + m_game.Score;
+        m_scoreText.text = "Score: " + m_game.Score.ToString("N0");
 
         //Nice. Insult the player. Good idea
         if(m_game.Score == 0)
